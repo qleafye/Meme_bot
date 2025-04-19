@@ -1,8 +1,42 @@
 from telegram import *
 from telegram.ext import *
-
+import os
+import json
+import random
 
 TOKEN = "7945777073:AAHUSHeCe7U6XVNIIUp-zM10JDOo-DNkBVY"
+
+photos_dir = "photos"
+database_file = "database.json"
+os.makedirs(photos_dir, exist_ok=True)
+
+
+def load_db():
+    if not os.path.exists(database_file):
+        return []
+    with open(database_file, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save_db(data):
+    with open(database_file, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+async def send_random_meme(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    memes = load_db()
+
+    if not memes:
+        await update.message.reply_text("ПРОСТИТИ ПОКА НЭТ МЭМИВ")
+        return
+
+    meme = random.choice(memes)
+
+    if not os.path.exists(meme["file_path"]):
+        await update.reply_text("Ошибка мем не найден, извинити")
+        return
+
+    await update.message.reply_photo(photo=open(meme["file_path"], "rb"), \
+                                     caption=f"Описание:{meme['descrition']}")
+
 
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -44,6 +78,7 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("custom", custom_command))
     app.add_handler(CommandHandler("menu", show_buttons))
+    app.add_handler(CommandHandler("meme",  send_random_meme))
     app.add_handler(MessageHandler(filters.TEXT, handle_reply_button))
 
 
