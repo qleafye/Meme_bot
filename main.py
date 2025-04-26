@@ -4,7 +4,7 @@ import os
 import json
 import random
 
-TOKEN = "7945777073:AAHUSHeCe7U6XVNIIUp-zM10JDOo-DNkBVY"
+TOKEN = "8018994940:AAHOX82aalcenjG_wFoAP29O3EnEdDrCQc0"
 
 photos_dir = "photos"
 database_file = "database.json"
@@ -62,7 +62,7 @@ async def show_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_reply_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
     if text == "😂Отправить мем":
-        await update.message.reply_text("Poka net memov :(")
+        await send_random_meme(update=update, context=ContextTypes.DEFAULT_TYPE)
     elif text == "👙Закрыть клавиатуру":
         await update.message.reply_text("ИДИ НАФИГ!!!!!1", reply_markup=ReplyKeyboardRemove())
 
